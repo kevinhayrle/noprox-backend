@@ -1,12 +1,14 @@
-
 require('dotenv').config();
 const mysql = require('mysql2/promise');
 const fs = require('fs');
 const path = require("path");
+
 let sslConfig;
 try {
   sslConfig = {
-   ca: fs.readFileSync(path.join(__dirname, 'ca.pem'))
+    ca: fs.readFileSync(path.join(__dirname, 'ca.pem')),
+    rejectUnauthorized: true,
+    minVersion: 'TLSv1.2'
   };
 } catch (err) {
   console.error('❌ Could not load ca.pem:', err.message);
@@ -25,13 +27,17 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-pool.getConnection()
-  .then(conn => {
-    console.log('✅ Connected to CapsuleX database (via pool)');
+async function initDB() {
+  try {
+    const conn = await pool.getConnection();
+    console.log('✅ Connected to Aiven MySQL database (via pool)');
     conn.release();
-  })
-  .catch(err => {
+  } catch (err) {
     console.error('❌ Failed to connect to database:', err.message);
-  });
+    process.exit(1);
+  }
+}
+
+initDB();
 
 module.exports = pool;
