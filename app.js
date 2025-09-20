@@ -1,9 +1,19 @@
 const express = require("express");
-const { signup, login } = require("../controllers/authController");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
-const router = express.Router();
+const authRoutes = require("./routes/authRoutes");
 
-router.post("/signup", signup);
-router.post("/login", login);
+const app = express();
+const PORT = 5000;
 
-module.exports = router;
+// Middleware
+app.use(bodyParser.json());
+app.use(cors());
+
+// Routes
+app.use("/api/auth", authRoutes);
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
