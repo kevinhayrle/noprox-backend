@@ -1,29 +1,46 @@
+const express = require('express');
+const cors = require("cors");
 require('dotenv').config();
 
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+console.log('👋 Backend starting...');
+
+const allowedOrigins = [
+  'https://storied-basbousa-d58741.netlify.app',
+  'http://127.0.0.1:5500',
+  'http://localhost:5500'
+];
 
 const authRoutes = require("./routes/authRoutes");
 
-const app = express();
+const app = express(); // only declare once
 const PORT = process.env.PORT || 5000;
 
 // CORS configuration
-const corsOptions = {
-  origin: "https://storied-basbousa-d58741.netlify.app", // your frontend
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
-};
+}));
 
-// Enable CORS for all requests
-app.use(cors(corsOptions));
+// Handle preflight OPTIONS requests for all routes
+app.options("*", cors({
+  origin: allowedOrigins,
+  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"],
+  credentials: true
+}));
 
-// Handle preflight requests
-app.options("*", cors(corsOptions));
+console.log('✅ CORS configured');
 
-app.use(bodyParser.json());
+app.use(express.json());
+console.log('✅ express.json middleware loaded');
 
 // Routes
 app.use("/api/auth", authRoutes);
