@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 console.log('👋 Noprox backend started');
 
 const allowedOrigins = [
-  'https://storied-basbousa-d58741.netlify.app',
+  'https://noprox.netlify.app',
   'http://127.0.0.1:5500',
   'http://localhost:5500'
 ];
