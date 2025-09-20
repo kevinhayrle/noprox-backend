@@ -6,7 +6,7 @@ const fs = require('fs');
 let sslConfig;
 try {
   sslConfig = {
-    ca: fs.readFileSync('ca.pem')
+   ca: fs.readFileSync(path.join(__dirname, 'ca.pem'))
   };
 } catch (err) {
   console.error('❌ Could not load ca.pem:', err.message);
