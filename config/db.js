@@ -5,7 +5,8 @@ const path = require("path");
 let sslConfig;
 try {
   sslConfig = {
-    ca: fs.readFileSync(path.join(__dirname, 'ca.pem'))
+    ca: fs.readFileSync(path.join(__dirname, '..', 'ca.pem')), // go up one level
+    rejectUnauthorized: true
   };
 } catch (err) {
   console.error('❌ Could not load ca.pem:', err.message);
