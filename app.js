@@ -1,4 +1,3 @@
-// Load environment variables from .env (or Render environment)
 require('dotenv').config();
 
 const express = require("express");
@@ -8,11 +7,16 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 
 const app = express();
-const PORT = process.env.PORT || 5000; // use Render's PORT if available
+const PORT = process.env.PORT || 5000;
 
-// Middleware
+// Explicitly allow your frontend origin
+app.use(cors({
+  origin: "https://storied-basbousa-d58741.netlify.app", // replace with your frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(bodyParser.json());
-app.use(cors());
 
 // Routes
 app.use("/api/auth", authRoutes);
